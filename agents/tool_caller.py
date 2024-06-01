@@ -1,13 +1,16 @@
 from dataclasses import dataclass
-from typing import Any, List, Tuple
+import json
+import shlex
+from typing import Any, List, Optional
 
 from core import LlamaManager, generate_grammar
 from tool import Tool
 
 @dataclass
-class Result:
+class ToolCallResult:
     success: bool
-    output: Any
+    tool_used: Optional[Tool]
+    output: Optional[Any]
 
 class ToolCaller():
     def __init__(
@@ -16,15 +19,33 @@ class ToolCaller():
             tools: List[Tool],
             system_prompt: str,
         ):
-
-        print(tools)
         self.manager = manager
-        self.tools = tools
+        self.tools = {tool.name: tool for tool in tools}
         # TODO: construct prompt
         self.system_prompt = system_prompt
         self.grammar = generate_grammar(tools)
 
-    def call(self, raw_text: str) -> Tuple[str, Result]:
-        return self.manager.query(self.system_prompt, raw_text, self.grammar)
+    def call(self, raw_text: str) -> ToolCallResult:
+        generated = self.manager.query(self.system_prompt, raw_text, self.grammar)
+        res = json.loads(generated)
+        print(res)
+        command = res['command']
 
+        # TODO: parse command
+        if command == 'PASS':
+            return ToolCallResult(True, None, None)
+        
+        tokens = shlex.split(command)
+        assert tokens[0] == 'TOOL'
+
+        tool = self.tools.get(tokens[1], None)
+        assert tool is not None
+
+
+        res = tool.call(*tokens[2:])
+        return ToolCallResult(
+            success=res.success,
+            tool_used=tool,
+            output=res.output
+        )
 

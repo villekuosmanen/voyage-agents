@@ -1,1 +1,1 @@
-from tool.tool import Tool, SearchObjectsTool
+from tool.tool import Tool, SearchObjectsTool, PickObjectTool, ChangeTaskTool, StringWithSpaces

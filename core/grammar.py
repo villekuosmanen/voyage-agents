@@ -3,12 +3,13 @@ import inspect
 
 from llama_cpp import LlamaGrammar
 
-from tool import Tool
+from tool import Tool, StringWithSpaces
 
 starting_grammar_rules = [
-    'root ::= "{ \\"thought\\": " thought ", \\"command: \\"" (toolCall | passCall) "\\" }"',
+    'root ::= "{ \\"thought\\": " thought ", \\"command\\": \\"" (toolCall | passCall) "\\" }"',
     'thought ::= "\\"I think" [a-zA-Z0-9_ ]+ "\\""',
     'passCall ::= "PASS"',
+    'stringWithSpacesArg ::= "\'" [a-zA-Z0-9_ ]+ "\'"',
     'stringArg ::= [a-zA-Z0-9_]+',
     'intArg ::= [0-9]+',
 ]
@@ -17,12 +18,10 @@ def generate_grammar(tools: List[Tool]):
     tool_names = []
     tool_rules = []
 
-    print(tools)
-
     for tool in tools:
         tool_command_name = tool.__class__.__name__
         tool_name = tool.name
-        use_method = tool.use
+        use_method = tool.call
         sig = inspect.signature(use_method)
         params = sig.parameters
 
@@ -35,6 +34,8 @@ def generate_grammar(tools: List[Tool]):
             arg_type = param.annotation
             if arg_type == str:
                 arg_type_str = "stringArg"
+            elif arg_type == StringWithSpaces:
+                arg_type_str = "stringWithSpacesArg"
             elif arg_type == int:
                 arg_type_str = "intArg"
             else:
@@ -55,6 +56,5 @@ def generate_grammar(tools: List[Tool]):
         tool_rules
     )
     grammar_string = '\n'.join(all_rules)
-    print(grammar_string)
     grammar = LlamaGrammar.from_string(grammar_string)
     return grammar
