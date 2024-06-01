@@ -1,0 +1,8 @@
+root ::= commandCall | passCall
+commandCall ::= "COMMAND " (searchObjectsTool | anotherTool)
+passCall ::= "PASS"
+searchObjectsTool ::= "SEARCH_OBJECTS " objectName
+anotherTool ::= "ANOTHER_TOOL " argument1 " " argument2
+objectName ::= [a-zA-Z0-9_]+
+argument1 ::= [a-zA-Z0-9_]+
+argument2 ::= [a-zA-Z0-9_]+ 
