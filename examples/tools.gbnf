@@ -1,5 +1,6 @@
-root ::= commandCall | passCall
-commandCall ::= "COMMAND " (searchObjectsTool | anotherTool)
+root ::= "{ \"thought\": " thought ", \"command: \"" (commandCall | passCall) "\" }"
+thought ::= "\"I think" [a-zA-Z0-9_ ]+ "\""
+commandCall ::= "TOOL " (searchObjectsTool | anotherTool)
 passCall ::= "PASS"
 searchObjectsTool ::= "SEARCH_OBJECTS " objectName
 anotherTool ::= "ANOTHER_TOOL " argument1 " " argument2
