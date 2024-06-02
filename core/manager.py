@@ -15,7 +15,7 @@ class LlamaManager:
         self.llm = llama
         llama_log_set(log_callback, ctypes.c_void_p(0))
 
-    def query(self, messages, grammar):
+    def query(self, messages, grammar = None):
         res = self.llm.create_chat_completion(
             messages=messages,
             response_format={ "type": "text" },

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import json
 import shlex
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 from core import LlamaManager, generate_grammar
 from tool import Tool
@@ -26,27 +26,23 @@ class ToolCaller():
         ):
         self.manager = manager
         self.tools = {tool.name: tool for tool in tools}
-        # TODO: construct prompt
-        self.system_prompt = construct_system_prompt(system_prompt, tools)
-        print(self.system_prompt)
-        self.messages = [
-            {"role": "system", "content": self.system_prompt},
-        ]
-
+        self.system_message = {"role": "system", "content": construct_system_prompt(system_prompt, tools)},
         self.grammar = generate_grammar(tools)
 
     def add_system_message(self, content):
         self.messages.append({"role": "system", "content": content})
 
-    def call(self, raw_text: str) -> ToolCallResult:
-        messages = self.messages.copy()
-        messages.append({
+    def call(self, raw_text: Optional[str], message_history: Optional[List[Dict]]) -> ToolCallResult:
+        messages = [self.system_message] 
+        if message_history is not None:
+            messages.append(message_history)
+        if raw_text is not None:
+            messages.append({
                 "role": "user",
                 "content": [
                     {"type" : "text", "text": raw_text},
                 ]
             })
-
         generated = self.manager.query(messages, self.grammar)
         res = json.loads(generated)
         print(res)

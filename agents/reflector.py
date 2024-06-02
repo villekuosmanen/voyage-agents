@@ -1,11 +1,12 @@
 from dataclasses import dataclass
+from typing import Any, Dict, List, Optional
 
 from core import LlamaManager, REFLECTOR_GRAMMAR
 
 @dataclass
 class ReflectorOutput:
     thought: str
-    should_continue: bool
+    finished: bool
 
 class Reflector():
     """
@@ -24,6 +25,6 @@ class Reflector():
         ]
         self.grammar = REFLECTOR_GRAMMAR
 
-    def reflect(self, raw_text: str):
+    def reflect(self, raw_text: str, message_history: List[Dict] = []) -> ReflectorOutput:
         # TODO: design this interface
         pass

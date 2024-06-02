@@ -15,8 +15,8 @@ starting_grammar_rules = [
 ]
 
 # TODO
-REFLECTOR_GRAMMAR = LlamaGrammar.from_string("""
-""")
+# REFLECTOR_GRAMMAR = LlamaGrammar.from_string("""
+# """)
 
 def generate_grammar(tools: List[Tool]):
     tool_names = []
