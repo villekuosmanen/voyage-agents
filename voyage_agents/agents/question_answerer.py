@@ -41,10 +41,16 @@ class QuestionAnswerer():
                 {"type": "text", "text": res.thought}
             ]
         })
+        
+        tool_name = 'PASS'
+        tool_output = "<no output>"
+        if res.tool_used is not None:
+            tool_name = res.tool_used.name
+            tool_output = res.output
         message_history.append({
             "role": "system",
             "content": [
-                {"type": "text", "text": f'{res.tool_used.name}: {res.output}'}
+                {"type": "text", "text": f'{tool_name}: {tool_output}'}
             ]
         })
 
