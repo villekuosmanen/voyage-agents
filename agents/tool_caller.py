@@ -3,7 +3,7 @@ import json
 import shlex
 from typing import Any, Dict, List, Optional
 
-from core import LlamaManager, generate_grammar
+from core import LlamaManager, generate_grammar, construct_system_message
 from tool import Tool
 from prompt import construct_system_prompt
 
@@ -26,11 +26,8 @@ class ToolCaller():
         ):
         self.manager = manager
         self.tools = {tool.name: tool for tool in tools}
-        self.system_message = {"role": "system", "content": construct_system_prompt(system_prompt, tools)},
+        self.system_message = construct_system_message(construct_system_prompt(system_prompt, tools))
         self.grammar = generate_grammar(tools)
-
-    def add_system_message(self, content):
-        self.messages.append({"role": "system", "content": content})
 
     def call(self, raw_text: Optional[str], message_history: Optional[List[Dict]]) -> ToolCallResult:
         messages = [self.system_message] 
@@ -51,7 +48,7 @@ class ToolCaller():
 
         # TODO: parse command
         if command == 'PASS':
-            return ToolCallResult(True, None, None)
+            return ToolCallResult(True, None, None, None)
         
         tokens = shlex.split(command)
         assert tokens[0] == 'TOOL'

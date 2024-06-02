@@ -12,6 +12,16 @@ Before you write your answer, analyse the problem and what tool would be useful.
 If one of the provided tools can be used to answer the question, answer with "TOOL <command> <args>". The output from the command as well as the original query will then be routed to another support agent.
 """
 
+reflector_explanation = """
+You are analysing the response of a tool used by an AI agent to assist the use with their query, as well as notes from the previous AI agent.
+Your task is to determine whether the user's query has been successfully actioned, or the question they posed can now be successfully answered.
+"""
+
+chain_of_thought_reflector_explanation = """
+Before you write your answer, analyse the problem and message history to determine whether the task is complete. Your analysis will be used by the tool calling agent to determine what tool to use next.
+Based on your analysis, set the finished status as true or false.
+"""
+
 def construct_system_prompt(prompt: str, tools: List[Tool]) -> str:
     tool_lines = []
     
@@ -46,3 +56,11 @@ def add_indentation(docstring, indentation='    - '):
     lines = docstring.split('\n')
     indented_lines = [f"{indentation}{line}" for line in lines]
     return '\n'.join(indented_lines)
+
+def construct_reflector_prompt(prompt: str):
+    prompt_lines = [
+        prompt,
+        reflector_explanation,
+        chain_of_thought_reflector_explanation,
+    ]
+    return '\n'.join(prompt_lines)

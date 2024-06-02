@@ -1,12 +1,11 @@
 from typing import Any, Dict, List, Optional, Tuple
 
-from core import LlamaManager, generate_grammar
+from core import LlamaManager
 from agents import Reflector, ToolCaller
 from tool import Tool
-from prompt import construct_system_prompt
 
-success_prompt = "Great job, the agent reported that the task completed successfully. Using the message history of the conversation, leave a short summary for the user describing the actions taken."
-failure_prompt = "Unfortunately the agent reported that the task did not complete successfully. Using the message history of the conversation, leave a short summary for the user describing the actions taken."
+success_prompt = "Great job, the agent reported that the task completed successfully. Referencing the message history when necessary, answer to the user in the most appropriate way."
+failure_prompt = "Unfortunately the agent reported that the task did not complete successfully. Referencing the message history when necessary, answer to the user in the most appropriate way."
 
 class Agent():
     """
@@ -70,6 +69,12 @@ class Agent():
             message_history.append({
                 "role": "system",
                 "content": [
+                    {"type": "text", "text": "AI AGENT THINKS: " + res.thought}
+                ]
+            })
+            message_history.append({
+                "role": "system",
+                "content": [
                     {"type": "text", "text": res.output}
                 ]
             })
@@ -82,6 +87,6 @@ class Agent():
             message_history.append({
                 "role": "system",
                 "content": [
-                    {"type": "text", "text": res.thought}
+                    {"type": "text", "text": "AI AGENT THINKS: " + res.thought}
                 ]
             })

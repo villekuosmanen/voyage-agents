@@ -1,7 +1,9 @@
 from dataclasses import dataclass
+import json
 from typing import Any, Dict, List, Optional
 
 from core import LlamaManager, REFLECTOR_GRAMMAR
+from prompt import construct_reflector_prompt
 
 @dataclass
 class ReflectorOutput:
@@ -20,11 +22,24 @@ class Reflector():
         self.manager = manager
         # TODO: construct system prompt for reflector
         self.system_prompt = system_prompt
-        self.messages = [
-            {"role": "system", "content": self.system_prompt},
-        ]
+        self.system_message = {"role": "system", "content": construct_reflector_prompt(system_prompt)},
         self.grammar = REFLECTOR_GRAMMAR
 
     def reflect(self, raw_text: str, message_history: List[Dict] = []) -> ReflectorOutput:
-        # TODO: design this interface
-        pass
+        messages = [self.system_message] 
+        if message_history is not None:
+            messages.append(message_history)
+        if raw_text is not None:
+            messages.append({
+                "role": "user",
+                "content": [
+                    {"type" : "text", "text": raw_text},
+                ]
+            })
+        generated = self.manager.query(messages, self.grammar)
+        res = json.loads(generated)
+
+        return ReflectorOutput(
+            thought=res['thought'],
+            finished=bool(res['finished'] == 'true')
+        )
