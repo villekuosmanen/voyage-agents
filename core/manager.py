@@ -27,17 +27,9 @@ class LlamaManager:
             # seed=1337, # Uncomment to set a specific seed
         )
 
-    def query(self, system_prompt, user_prompt, grammar):
+    def query(self, messages, grammar):
         res = self.llm.create_chat_completion(
-            messages = [
-                {"role": "system", "content": system_prompt},
-                {
-                    "role": "user",
-                    "content": [
-                        {"type" : "text", "text": user_prompt},
-                    ]
-                }
-            ],
+            messages=messages,
             response_format={ "type": "text" },
             grammar=grammar,
         )

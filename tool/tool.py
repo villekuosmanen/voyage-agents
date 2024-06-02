@@ -12,8 +12,6 @@ class StringWithSpaces(str):
 
 class Tool(ABC):
     name: str
-    description: str
-
 
     def __init__(self) -> None:
         pass
@@ -23,8 +21,11 @@ class Tool(ABC):
         pass
 
 class SearchObjectsTool(Tool):
+    """
+    Query the detected object database for objects detected by the robot with the given name. Returns information about the objects, including their IDs.
+    Does not physically search the environment for new objects.
+    """
     name: str = "SEARCH_OBJECTS"
-    description: str = "TODO"
 
     def __init__(self) -> None:
         pass
@@ -34,8 +35,10 @@ class SearchObjectsTool(Tool):
         return ToolResult(True, f'ID: 2, name: {object_name}')
     
 class PickObjectTool(Tool):
+    """
+    Instructs the robot to pick an object with the given ID.
+    """
     name: str = "PICK_OBJECT"
-    description: str = "TODO"
 
     def __init__(self) -> None:
         pass
@@ -45,8 +48,11 @@ class PickObjectTool(Tool):
         return ToolResult(True, None)
     
 class ChangeTaskTool(Tool):
+    """
+    Changes the current task of the robot. The input to this should be written in concise natural language, describing the objects involved and actions to take.
+    This tool should be used for any actions that take more than one step to complete.
+    """
     name: str = "CHANGE_TASK"
-    description: str = "TODO"
 
     def __init__(self) -> None:
         pass

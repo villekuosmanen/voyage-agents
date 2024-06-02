@@ -5,6 +5,7 @@ from typing import Any, List, Optional
 
 from core import LlamaManager, generate_grammar
 from tool import Tool
+from prompt import construct_system_prompt
 
 @dataclass
 class ToolCallResult:
@@ -22,11 +23,27 @@ class ToolCaller():
         self.manager = manager
         self.tools = {tool.name: tool for tool in tools}
         # TODO: construct prompt
-        self.system_prompt = system_prompt
+        self.system_prompt = construct_system_prompt(system_prompt, tools)
+        print(self.system_prompt)
+        self.messages = [
+            {"role": "system", "content": self.system_prompt},
+        ]
+
         self.grammar = generate_grammar(tools)
 
+    def add_system_message(self, content):
+        self.messages.append({"role": "system", "content": content})
+
     def call(self, raw_text: str) -> ToolCallResult:
-        generated = self.manager.query(self.system_prompt, raw_text, self.grammar)
+        messages = self.messages.copy()
+        messages.append({
+                "role": "user",
+                "content": [
+                    {"type" : "text", "text": raw_text},
+                ]
+            })
+
+        generated = self.manager.query(messages, self.grammar)
         res = json.loads(generated)
         print(res)
         command = res['command']
