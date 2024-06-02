@@ -3,9 +3,9 @@ import json
 import shlex
 from typing import Any, Dict, List, Optional
 
-from core import LlamaManager, generate_grammar, construct_system_message
-from tool import Tool
-from prompt import construct_system_prompt
+from voyage_agents.core import LlamaManager, generate_grammar, construct_system_message
+from voyage_agents.tool import Tool
+from voyage_agents.prompt import construct_system_prompt
 
 @dataclass
 class ToolCallResult:

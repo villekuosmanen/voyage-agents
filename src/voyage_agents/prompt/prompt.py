@@ -1,7 +1,7 @@
 from typing import List
 import inspect
 
-from tool import Tool
+from voyage_agents.tool import Tool
 
 tool_explanation = """
 You do not answer to the user directly - rather, your job is to choose what tool should be used to get the answer. You should analyse the problem first before choosing what tool to use.

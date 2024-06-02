@@ -1,0 +1,18 @@
+[project]
+name = "voyage-agents"
+version = "0.0.1"
+authors = [
+  { name="Ville Kuosmanen" },
+]
+description = "AI agent and tool calling library for small local models using llama.cpp."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/villekuosmanen/voyage-agents"
+Issues = "https://github.com/villekuosmanen/voyage-agents/issues"

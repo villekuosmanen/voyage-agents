@@ -1,9 +1,9 @@
 from llama_cpp import Llama
 from llama_cpp.llama_chat_format import Llava16ChatHandler
 
-from core import LlamaManager, construct_system_message
-from agents import Agent
-from tool import SearchObjectsTool, PickObjectTool, ChangeTaskTool
+from voyage_agents.core import LlamaManager, construct_system_message
+from voyage_agents.agents import Agent
+from voyage_agents.tool import SearchObjectsTool, PickObjectTool, ChangeTaskTool
 
 system_prompt = """You are an intelligent robotic assistant that is navigating autonomously in an environment, attempting to complete a given task, and assisting a user with queries."""
 

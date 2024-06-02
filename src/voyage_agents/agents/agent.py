@@ -1,9 +1,9 @@
 from typing import Any, Dict, List, Optional, Tuple
 
-from core import LlamaManager, construct_system_message
-from agents import Reflector, ToolCaller
-from tool import Tool
-from prompt import construct_agent_system_prompt
+from voyage_agents.core import LlamaManager, construct_system_message
+from voyage_agents.agents import Reflector, ToolCaller
+from voyage_agents.tool import Tool
+from voyage_agents.prompt import construct_agent_system_prompt
 
 success_prompt = "Great job, the agent reported that the task completed successfully. Referencing the message history when necessary, answer to the user in the most appropriate way."
 failure_prompt = "Unfortunately the agent reported that the task did not complete successfully. Referencing the message history when necessary, answer to the user in the most appropriate way."

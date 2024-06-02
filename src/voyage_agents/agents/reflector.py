@@ -2,8 +2,8 @@ from dataclasses import dataclass
 import json
 from typing import Any, Dict, List, Optional
 
-from core import LlamaManager, REFLECTOR_GRAMMAR, construct_system_message
-from prompt import construct_reflector_prompt
+from voyage_agents.core import LlamaManager, REFLECTOR_GRAMMAR, construct_system_message
+from voyage_agents.prompt import construct_reflector_prompt
 
 @dataclass
 class ReflectorOutput:

@@ -3,7 +3,7 @@ import inspect
 
 from llama_cpp import LlamaGrammar
 
-from tool import Tool, StringWithSpaces
+from voyage_agents.tool import Tool, StringWithSpaces
 
 starting_grammar_rules = [
     'root ::= "{ \\"thought\\": " thought ", \\"command\\": \\"" (toolCall | passCall) "\\" }"',
