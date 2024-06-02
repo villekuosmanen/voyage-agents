@@ -29,10 +29,10 @@ class ToolCaller():
         self.system_message = construct_system_message(construct_system_prompt(system_prompt, tools))
         self.grammar = generate_grammar(tools)
 
-    def call(self, raw_text: Optional[str], message_history: Optional[List[Dict]]) -> ToolCallResult:
+    def call(self, raw_text: Optional[str] = None, message_history: Optional[List[Dict]]= None) -> ToolCallResult:
         messages = [self.system_message] 
         if message_history is not None:
-            messages.append(message_history)
+            messages += message_history
         if raw_text is not None:
             messages.append({
                 "role": "user",
@@ -48,7 +48,7 @@ class ToolCaller():
 
         # TODO: parse command
         if command == 'PASS':
-            return ToolCallResult(True, None, None, None)
+            return ToolCallResult(thought, True, None, None)
         
         tokens = shlex.split(command)
         assert tokens[0] == 'TOOL'

@@ -7,14 +7,14 @@ from tool import SearchObjectsTool, PickObjectTool, ChangeTaskTool
 
 system_prompt = """You are an intelligent robotic assistant that is navigating autonomously in an environment, attempting to complete a given task, and assisting a user with queries."""
 
-system_action_log = construct_system_message("""
+system_action_log = [construct_system_message("""
 --- SYSTEM ACTION LOG ---
 
 SYSTEM: using the following robot: Hello Robot Stretch 2
 SYSTEM: robot's current task is now "move picture_frame from bench to table"
 
 --- END OF SYSTEM ACTION LOG ---
-""")
+""")]
 
 model_path = "data/llava-v1.6-mistral-7b/llava-v1.6-mistral-7b-8B-F32.gguf"
 clip_model_path="data/llava-v1.6-mistral-7b/mmproj.bin"

@@ -45,7 +45,7 @@ class PickObjectTool(Tool):
 
     def call(self, object_id: int) -> ToolResult:
         # TODO: implement this
-        return ToolResult(True, None)
+        return ToolResult(True, "Pick object task queued successfully.")
     
 class ChangeTaskTool(Tool):
     """
@@ -59,4 +59,4 @@ class ChangeTaskTool(Tool):
 
     def call(self, description: StringWithSpaces) -> ToolResult:
         # TODO: implement this - it would be a nested agent
-        return ToolResult(True, description)
+        return ToolResult(True, f'Task is now {description}')

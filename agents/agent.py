@@ -1,8 +1,9 @@
 from typing import Any, Dict, List, Optional, Tuple
 
-from core import LlamaManager
+from core import LlamaManager, construct_system_message
 from agents import Reflector, ToolCaller
 from tool import Tool
+from prompt import construct_agent_system_prompt
 
 success_prompt = "Great job, the agent reported that the task completed successfully. Referencing the message history when necessary, answer to the user in the most appropriate way."
 failure_prompt = "Unfortunately the agent reported that the task did not complete successfully. Referencing the message history when necessary, answer to the user in the most appropriate way."
@@ -25,12 +26,32 @@ class Agent():
             max_iterations: int = 10,
         ) -> None:
         self.manager = manager
+        self.tools = tools
+        self.system_prompt = system_prompt
         self.tool_caller = ToolCaller(manager, tools, system_prompt)
         self.reflector = Reflector(manager, system_prompt)
         self.max_iterations = max_iterations
 
     def run(self, raw_data, message_history: List[Dict] = []):
-        did_complete, message_history = self._run_agent(raw_data, message_history)
+        user_message = {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": raw_data}
+                ]
+            }
+        messages = [
+            construct_system_message(construct_agent_system_prompt(self.system_prompt, self.tools))
+        ] + message_history + [user_message]
+        res = self.manager.query(messages)
+        message_history.append(user_message)
+        message_history.append({
+                "role": "assistant",
+                "content": [
+                    {"type": "text", "text": res}
+                ]
+            })
+
+        did_complete, message_history = self._run_agent(message_history)
         if did_complete:
             message_history.append({
                 "role": "system",
@@ -46,19 +67,12 @@ class Agent():
                 ]
             })
 
-        return self.summarise()
+        return self.summarise(message_history)
 
     def summarise(self, message_history: List[Dict]) -> str:
         return self.manager.query(message_history)
         
-    def _run_agent(self, raw_data, message_history: List[Dict] = []) -> Tuple[bool, List[Dict]]:
-        message_history.append({
-                "role": "user",
-                "content": [
-                    {"type" : "text", "text": raw_data},
-                ]
-            })
-
+    def _run_agent(self, message_history: List[Dict] = []) -> Tuple[bool, List[Dict]]:
         i = 0
         while i < self.max_iterations:
             res = self.tool_caller.call(message_history=message_history)
@@ -67,15 +81,15 @@ class Agent():
         
             # add to conversation
             message_history.append({
-                "role": "system",
+                "role": "assistant",
                 "content": [
-                    {"type": "text", "text": "AI AGENT THINKS: " + res.thought}
+                    {"type": "text", "text": res.thought}
                 ]
             })
             message_history.append({
                 "role": "system",
                 "content": [
-                    {"type": "text", "text": res.output}
+                    {"type": "text", "text": f'{res.tool_used.name}: {res.output}'}
                 ]
             })
 
@@ -85,8 +99,8 @@ class Agent():
             
             # add to conversation
             message_history.append({
-                "role": "system",
+                "role": "assistant",
                 "content": [
-                    {"type": "text", "text": "AI AGENT THINKS: " + res.thought}
+                    {"type": "text", "text": res.thought}
                 ]
             })

@@ -18,13 +18,36 @@ Your task is to determine whether the user's query has been successfully actione
 """
 
 chain_of_thought_reflector_explanation = """
-Before you write your answer, analyse the problem and message history to determine whether the task is complete. Your analysis will be used by the tool calling agent to determine what tool to use next.
+Before you write your answer, describe what action the previous agent took, and whether the task is not complete. Your analysis will be used by the tool calling agent to determine what tool to use next.
 Based on your analysis, set the finished status as true or false.
 """
 
+agent_start_prompt = """
+You are coordinating a group of agents in helping with the given task or question, which may require some tools to complete.
+Describe with a high level plan how the user's request can be serviced, referencing the list of tools where necessary.
+"""
+
+def construct_agent_system_prompt(prompt: str, tools: List[Tool]) -> str:
+    prompt_lines = [
+        prompt,
+        agent_start_prompt,
+        "TOOLS:",
+        get_tools_prompt(tools),
+    ]
+    return '\n'.join(prompt_lines)
+
 def construct_system_prompt(prompt: str, tools: List[Tool]) -> str:
+    prompt_lines = [
+        prompt,
+        tool_explanation,
+        "TOOLS:",
+        get_tools_prompt(tools),
+        chain_of_thought_explanation,
+    ]
+    return '\n'.join(prompt_lines)
+
+def get_tools_prompt(tools: List[Tool]) -> str:
     tool_lines = []
-    
     for tool in tools:
         tool_name = tool.name
         doc = inspect.getdoc(tool)
@@ -42,15 +65,8 @@ def construct_system_prompt(prompt: str, tools: List[Tool]) -> str:
         tool_args = ' '.join(args)
         tool_lines.append(f"- {tool_name} {tool_args}\n{add_indentation(doc)}")
 
-    tools_prompt = '\n'.join(tool_lines)
-    prompt_lines = [
-        prompt,
-        tool_explanation,
-        "TOOLS:",
-        tools_prompt,
-        chain_of_thought_explanation,
-    ]
-    return '\n'.join(prompt_lines)
+    return '\n'.join(tool_lines)
+
 
 def add_indentation(docstring, indentation='    - '):
     lines = docstring.split('\n')

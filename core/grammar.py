@@ -14,7 +14,7 @@ starting_grammar_rules = [
     'intArg ::= [0-9]+',
 ]
 
-REFLECTOR_GRAMMAR = LlamaGrammar.from_string('root ::= "{ \\"thought\\": " string ", \\"finished\\": " bool " }"\nbool ::= "true" | "false"\nstring ::= [a-zA-Z0-9_]+')
+REFLECTOR_GRAMMAR = LlamaGrammar.from_string('root ::= "{ \\"thought\\": " thoughtString ", \\"finished\\": " bool " }"\nbool ::= "true" | "false"\nthoughtString ::= "\\"The previous agent " [a-zA-Z0-9_ ]+ "\\""')
 
 def generate_grammar(tools: List[Tool]):
     tool_names = []
