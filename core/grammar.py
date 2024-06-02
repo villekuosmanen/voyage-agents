@@ -14,6 +14,10 @@ starting_grammar_rules = [
     'intArg ::= [0-9]+',
 ]
 
+# TODO
+REFLECTOR_GRAMMAR = LlamaGrammar.from_string("""
+""")
+
 def generate_grammar(tools: List[Tool]):
     tool_names = []
     tool_rules = []

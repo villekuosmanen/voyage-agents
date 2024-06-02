@@ -1,4 +1,4 @@
-from llama_cpp import Llama, LlamaGrammar
+from llama_cpp import Llama
 from llama_cpp.llama_chat_format import Llava16ChatHandler
 
 from core import LlamaManager
@@ -18,12 +18,20 @@ SYSTEM: robot's current task is now "move picture_frame from bench to table"
 
 model_path = "data/llava-v1.6-mistral-7b/llava-v1.6-mistral-7b-8B-F32.gguf"
 clip_model_path="data/llava-v1.6-mistral-7b/mmproj.bin"
-manager = LlamaManager(model_path, clip_model_path)
+
+
+chat_handler = Llava16ChatHandler(clip_model_path=clip_model_path)
+llama = Llama(
+    model_path=model_path,
+    chat_handler=chat_handler,
+    n_gpu_layers=20, # Uncomment to use GPU acceleration
+    n_ctx=4092, # Uncomment to increase the context window
+    # seed=1337, # Uncomment to set a specific seed
+)
+manager = LlamaManager(llama)
 
 tool_caller = ToolCaller(manager, [SearchObjectsTool(), PickObjectTool(), ChangeTaskTool()], system_prompt)
 tool_caller.add_system_message(system_action_log)
-
-manager.start()
 
 # search objects
 print(tool_caller.call("have you found the object you are looking for yet?"))

@@ -1,7 +1,6 @@
 import ctypes
 
-from llama_cpp import Llama, LlamaGrammar, llama_log_set, llama_log_callback
-from llama_cpp.llama_chat_format import Llava16ChatHandler
+from llama_cpp import Llama, llama_log_set, llama_log_callback
 
 @llama_log_callback
 def log_callback(
@@ -12,20 +11,9 @@ def log_callback(
     pass
 
 class LlamaManager:
-    def __init__(self, model_path, clip_model_path):
-        self.model_path = model_path
-        self.clip_model_path = clip_model_path
+    def __init__(self, llama: Llama):
+        self.llm = llama
         llama_log_set(log_callback, ctypes.c_void_p(0))
-
-    def start(self):
-        chat_handler = Llava16ChatHandler(clip_model_path=self.clip_model_path)
-        self.llm = Llama(
-            model_path=self.model_path,
-            chat_handler=chat_handler,
-            n_gpu_layers=20, # Uncomment to use GPU acceleration
-            n_ctx=4092, # Uncomment to increase the context window
-            # seed=1337, # Uncomment to set a specific seed
-        )
 
     def query(self, messages, grammar):
         res = self.llm.create_chat_completion(

@@ -9,11 +9,15 @@ from prompt import construct_system_prompt
 
 @dataclass
 class ToolCallResult:
+    thought: str
     success: bool
     tool_used: Optional[Tool]
     output: Optional[Any]
 
 class ToolCaller():
+    """
+    A simple agent capable for calling tools. Returns structured output.
+    """
     def __init__(
             self,
             manager: LlamaManager,
@@ -46,6 +50,7 @@ class ToolCaller():
         generated = self.manager.query(messages, self.grammar)
         res = json.loads(generated)
         print(res)
+        thought=res['thought']
         command = res['command']
 
         # TODO: parse command
@@ -61,6 +66,7 @@ class ToolCaller():
 
         res = tool.call(*tokens[2:])
         return ToolCallResult(
+            thought=thought,
             success=res.success,
             tool_used=tool,
             output=res.output
