@@ -11,8 +11,9 @@ def log_callback(
     pass
 
 class LlamaManager:
-    def __init__(self, llama: Llama):
+    def __init__(self, llama: Llama, temperature=0.2):
         self.llm = llama
+        self.temperature = temperature
         llama_log_set(log_callback, ctypes.c_void_p(0))
 
     def query(self, messages, grammar = None):
@@ -20,5 +21,6 @@ class LlamaManager:
             messages=messages,
             response_format={ "type": "text" },
             grammar=grammar,
+            temperature=self.temperature
         )
         return res['choices'][0]['message']['content']

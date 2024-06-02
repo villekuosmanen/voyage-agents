@@ -26,9 +26,9 @@ llama = Llama(
     chat_handler=chat_handler,
     n_gpu_layers=20, # Uncomment to use GPU acceleration
     n_ctx=4092, # Uncomment to increase the context window
-    # seed=1337, # Uncomment to set a specific seed
+    seed=1337, # Uncomment to set a specific seed
 )
-manager = LlamaManager(llama)
+manager = LlamaManager(llama, temperature=0)
 
 agent = QuestionAnswerer(manager, [SearchObjectsTool(), PickObjectTool(), ChangeTaskTool()], system_prompt)
 
