@@ -3,9 +3,10 @@ from dataclasses import dataclass
 from typing import Any, Optional
 
 @dataclass
-class ToolResult:
+class ToolResponse:
     success: bool
-    output: Optional[Any]
+    structured_output: Optional[Any]
+    textual_output: Optional[Any]
 
 class StringWithSpaces(str):
     pass
@@ -17,7 +18,7 @@ class Tool(ABC):
         pass
 
     @abstractmethod
-    def call(self, **kwargs) -> ToolResult:
+    def call(self, **kwargs) -> ToolResponse:
         pass
 
 class SearchObjectsTool(Tool):
@@ -30,9 +31,9 @@ class SearchObjectsTool(Tool):
     def __init__(self) -> None:
         pass
 
-    def call(self, object_name: str) -> ToolResult:
+    def call(self, object_name: str) -> ToolResponse:
         # TODO: implement this
-        return ToolResult(True, f'ID: 2, name: {object_name}')
+        return ToolResponse(True, None, f'ID: 2, name: {object_name}')
     
 class PickObjectTool(Tool):
     """
@@ -43,9 +44,9 @@ class PickObjectTool(Tool):
     def __init__(self) -> None:
         pass
 
-    def call(self, object_id: int) -> ToolResult:
+    def call(self, object_id: int) -> ToolResponse:
         # TODO: implement this
-        return ToolResult(True, "Pick object task queued successfully.")
+        return ToolResponse(True, None, "Pick object task queued successfully.")
     
 class ChangeTaskTool(Tool):
     """
@@ -57,6 +58,6 @@ class ChangeTaskTool(Tool):
     def __init__(self) -> None:
         pass
 
-    def call(self, description: StringWithSpaces) -> ToolResult:
+    def call(self, description: StringWithSpaces) -> ToolResponse:
         # TODO: implement this - it would be a nested agent
-        return ToolResult(True, f'Task is now {description}')
+        return ToolResponse(True, None, f'Task is now {description}')

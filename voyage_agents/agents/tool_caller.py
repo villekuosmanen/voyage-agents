@@ -8,11 +8,17 @@ from voyage_agents.tool import Tool
 from voyage_agents.prompt import construct_system_prompt
 
 @dataclass
+class ToolResult:
+    tool_used: Tool
+    args: List[Any]
+    structured_output: Optional[Any]
+    textual_output: str
+
+@dataclass
 class ToolCallResult:
     thought: str
     success: bool
-    tool_used: Optional[Tool]
-    output: Optional[Any]
+    tool_result: Optional[ToolResult]
 
 class ToolCaller():
     """
@@ -48,7 +54,7 @@ class ToolCaller():
 
         # TODO: parse command
         if command == 'PASS':
-            return ToolCallResult(thought, True, None, None)
+            return ToolCallResult(thought, True, None)
         
         tokens = shlex.split(command)
         assert tokens[0] == 'TOOL'
@@ -61,7 +67,11 @@ class ToolCaller():
         return ToolCallResult(
             thought=thought,
             success=res.success,
-            tool_used=tool,
-            output=res.output
+            tool_result=ToolResult(
+                tool_used=tool,
+                args=tokens[2:],
+                structured_output=res.structured_output,
+                textual_output=res.textual_output,
+            ),
         )
 
