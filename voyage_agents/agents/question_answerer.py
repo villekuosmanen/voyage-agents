@@ -38,14 +38,6 @@ class QuestionAnswerer():
 
         # call the tool caller
         res = self.tool_caller.call(message_history=message_history)
-
-        # add tool caller's thought into message history 
-        message_history.append({
-            "role": "assistant",
-            "content": [
-                {"type": "text", "text": res.thought}
-            ]
-        })
             
         tool_name = 'pass'
         tool_output = "<no output>"
@@ -55,18 +47,15 @@ class QuestionAnswerer():
         if not res.success:
             # Make sure we mention tool failures to the agent.
             tool_output = "The use of this tool failed. No action was taken by this tool."
-        
-        message_history.append({
-            "role": "system",
-            "content": [
-                {"type": "text", "text": f'{tool_name}: {tool_output}'}
-            ]
-        })
 
-        system_prompt = f"""
-        {self.system_prompt}
+        system_prompt = f"""{self.system_prompt}
 
-        {question_answerer_prompt}
+{question_answerer_prompt}
+
+Thought from the previous assistant:
+{res.thought}
+Tool output:
+{tool_name}: {tool_output}
         """
         messages = [construct_system_message(system_prompt)] + message_history
         query_res = self.manager.query(messages)
