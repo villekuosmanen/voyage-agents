@@ -9,7 +9,7 @@ You do not answer to the user directly - rather, your job is to choose what tool
 
 chain_of_thought_explanation = """
 Before you write your answer, analyse the problem and what tool would be useful. If you think the query can be answered instantly, or can't be answered with any of these tools, simply answer with PASS.
-If one of the provided tools can be used to answer the question, answer with "TOOL <command> <args>". The output from the command as well as the original query will then be routed to another support agent.
+If one of the provided tools can be used to answer the question, answer with "tool <command> <args>". The output from the command as well as the original query will then be routed to another support agent.
 """
 
 reflector_explanation = """

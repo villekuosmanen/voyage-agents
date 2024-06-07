@@ -26,7 +26,7 @@ class SearchObjectsTool(Tool):
     Query the detected object database for objects detected by the robot with the given name. Returns information about the objects, including their IDs.
     Does not physically search the environment for new objects.
     """
-    name: str = "SEARCH_OBJECTS"
+    name: str = "search_objects"
 
     def __init__(self) -> None:
         pass
@@ -39,7 +39,7 @@ class PickObjectTool(Tool):
     """
     Instructs the robot to pick an object with the given ID.
     """
-    name: str = "PICK_OBJECT"
+    name: str = "pick_object"
 
     def __init__(self) -> None:
         pass
@@ -53,7 +53,7 @@ class ChangeTaskTool(Tool):
     Changes the current task of the robot. The input to this should be written in concise natural language, describing the objects involved and actions to take.
     This tool should be used for any actions that take more than one step to complete.
     """
-    name: str = "CHANGE_TASK"
+    name: str = "change_task"
 
     def __init__(self) -> None:
         pass

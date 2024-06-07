@@ -6,9 +6,9 @@ from llama_cpp import LlamaGrammar
 from voyage_agents.tool import Tool, StringWithSpaces
 
 starting_grammar_rules = [
-    'root ::= "{ \\"thought\\": " thought ", \\"command\\": \\"" (toolCall | passCall) "\\" }"',
+    'root ::= "thought: " thought "\ncommand: " (toolCall | passCall)',
     'thought ::= "\\"I think" [a-zA-Z0-9_ ]+ "\\""',
-    'passCall ::= "PASS"',
+    'passCall ::= "pass"',
     'stringWithSpacesArg ::= "\'" [a-zA-Z0-9_ ]+ "\'"',
     'stringArg ::= [a-zA-Z0-9_]+',
     'intArg ::= [0-9]+',
@@ -54,7 +54,7 @@ def generate_grammar(tools: List[Tool]):
     toolRule = ' | '.join(tool_names)
     all_rules = (
         starting_grammar_rules + 
-        [f'toolCall ::= "TOOL " ({toolRule})'] +
+        [f'toolCall ::= "tool " ({toolRule})'] +
         tool_rules
     )
     grammar_string = '\n'.join(all_rules)

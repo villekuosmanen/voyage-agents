@@ -47,17 +47,17 @@ class ToolCaller():
                 ]
             })
         generated = self.manager.query(messages, self.grammar)
-        res = json.loads(generated)
-        print(res)
-        thought=res['thought']
-        command = res['command']
+        tokens = generated.split('\n')
+        print(tokens)
+        thought=tokens[0].split(':')[1]
+        command = tokens[1].split(':')[1]
 
         # TODO: parse command
-        if command == 'PASS':
+        if command == 'pass':
             return ToolCallResult(thought, True, None)
         
         tokens = shlex.split(command)
-        assert tokens[0] == 'TOOL'
+        assert tokens[0] == 'tool'
 
         tool = self.tools.get(tokens[1], None)
         assert tool is not None

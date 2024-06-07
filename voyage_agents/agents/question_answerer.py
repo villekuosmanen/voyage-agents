@@ -47,7 +47,7 @@ class QuestionAnswerer():
             ]
         })
             
-        tool_name = 'PASS'
+        tool_name = 'pass'
         tool_output = "<no output>"
         if res.tool_result is not None:
             tool_name = res.tool_result.tool_used.name
