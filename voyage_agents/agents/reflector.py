@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-import json
 from typing import Any, Dict, List, Optional
 
 from voyage_agents.core import LlamaManager, REFLECTOR_GRAMMAR, construct_system_message
@@ -35,9 +34,12 @@ class Reflector():
                 ]
             })
         generated = self.manager.query(messages, self.grammar)
-        res = json.loads(generated)
+        tokens = generated.split('\n')
+        print(tokens)
+        thought=tokens[0].split(':')[1]
+        finished = tokens[1].split(':')[1]
 
         return ReflectorOutput(
-            thought=res['thought'],
-            finished=res['finished']
+            thought=thought,
+            finished=finished
         )

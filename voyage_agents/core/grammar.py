@@ -7,14 +7,14 @@ from voyage_agents.tool import Tool, StringWithSpaces
 
 starting_grammar_rules = [
     'root ::= "thought: " thought "\ncommand: " (toolCall | passCall)',
-    'thought ::= "\\"I think" [a-zA-Z0-9_ ]+ "\\""',
+    'thought ::= "\\"I think" [a-zA-Z0-9_ .,-]+ "\\""',
     'passCall ::= "pass"',
     'stringWithSpacesArg ::= "\'" [a-zA-Z0-9_ ]+ "\'"',
     'stringArg ::= [a-zA-Z0-9_]+',
     'intArg ::= [0-9]+',
 ]
 
-REFLECTOR_GRAMMAR = LlamaGrammar.from_string('root ::= "{ \\"thought\\": " thoughtString ", \\"finished\\": " bool " }"\nbool ::= "true" | "false"\nthoughtString ::= "\\"The previous agent " [a-zA-Z0-9_ ]+ "\\""')
+REFLECTOR_GRAMMAR = LlamaGrammar.from_string('root ::= "thought: " thoughtString "\nfinished: " bool\nbool ::= "true" | "false"\nthoughtString ::= "\\"The previous agent " [a-zA-Z0-9_ .,-]+ "\\""')
 
 def generate_grammar(tools: List[Tool]):
     tool_names = []
@@ -48,7 +48,6 @@ def generate_grammar(tools: List[Tool]):
         arg_list = ' '.join(args)
         grammar_line = f'{tool_command_name} ::= "{tool_name} " {arg_list}'
         tool_rules.append(grammar_line)
-        # TODO add a reference to command entry
         tool_names.append(tool_command_name)
 
     toolRule = ' | '.join(tool_names)

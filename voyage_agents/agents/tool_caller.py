@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-import json
 import shlex
 from typing import Any, Dict, List, Optional
 
@@ -52,7 +51,6 @@ class ToolCaller():
         thought=tokens[0].split(':')[1]
         command = tokens[1].split(':')[1]
 
-        # TODO: parse command
         if command == 'pass':
             return ToolCallResult(thought, True, None)
         
